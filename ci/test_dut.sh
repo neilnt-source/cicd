@@ -15,6 +15,8 @@ SSH_OPTS=(
 echo "=== DUT reachability ==="
 ping -c 3 -W 2 "$DUT_HOST"
 
+ssh-keygen -y -f "$SSH_KEY" > /dev/null && echo KEY_OK_IN_JENKINS
+
 echo "=== DUT board information ==="
 ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
   'ubus call system board'
