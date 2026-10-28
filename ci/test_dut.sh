@@ -16,11 +16,13 @@ echo "=== DUT reachability ==="
 ping -c 3 -W 2 "$DUT_HOST"
 
 echo "=== DUT board information ==="
-ssh -i "$SSH_KEY" \
+ssh \
+    -i "$SSH_KEY" \
+    -o IdentitiesOnly=yes \
     -o BatchMode=yes \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
-    "$SSH_USER@$DUT_HOST" 'ubus call system board'
+    -o StrictHostKeyChecking=yes \
+    "$SSH_USER@$DUT_HOST" \
+    'ubus call system board'
 
 echo "=== DUT network interfaces ==="
 ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
