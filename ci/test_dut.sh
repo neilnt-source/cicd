@@ -6,9 +6,6 @@ set -Eeuo pipefail
 : "${SSH_USER:?Set SSH_USER to the DUT SSH username}"
 : "${SSH_KEY:?Set SSH_KEY to the private-key file path}"
 
-SSH_OPTS=(
-    -i "$SSH_KEY"
-)
 
 echo "=== SSH configuration ==="
 echo "DUT host: $DUT_HOST"
@@ -23,15 +20,15 @@ echo "=== DUT reachability ==="
 ping -c 3 -W 2 "$DUT_HOST"
 
 echo "=== Test SSH authentication ==="
-ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
+ssh  "$SSH_USER@$DUT_HOST" \
     'echo "SSH authentication successful"; id'
 
 echo "=== DUT board information ==="
-ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
+ssh  "$SSH_USER@$DUT_HOST" \
     'ubus call system board'
 
 echo "=== DUT network interfaces ==="
-ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
+ssh  "$SSH_USER@$DUT_HOST" \
     'ip -br link'
 
 echo "=== DUT smoke test passed ==="
