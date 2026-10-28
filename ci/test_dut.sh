@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
@@ -6,26 +7,35 @@ set -Eeuo pipefail
 : "${SSH_KEY:?Set SSH_KEY to the private-key file path}"
 
 SSH_OPTS=(
-  -i "$SSH_KEY"
-  -o BatchMode=yes
-  -o ConnectTimeout=5
-  -o StrictHostKeyChecking=yes
+    -i "$SSH_KEY"
+    -o IdentitiesOnly=yes
+    -o BatchMode=yes
+    -o ConnectTimeout=5
+    -o StrictHostKeyChecking=yes
 )
+
+echo "=== SSH configuration ==="
+echo "DUT host: $DUT_HOST"
+echo "SSH user: $SSH_USER"
+test -r "$SSH_KEY" || {
+    echo "ERROR: SSH private key is not readable"
+    exit 1
+}
+echo "SSH private key file is readable"
 
 echo "=== DUT reachability ==="
 ping -c 3 -W 2 "$DUT_HOST"
 
+echo "=== Test SSH authentication ==="
+ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
+    'echo "SSH authentication successful"; id'
+
 echo "=== DUT board information ==="
-ssh \
-    -i "$SSH_KEY" \
-    -o IdentitiesOnly=yes \
-    -o BatchMode=yes \
-    -o StrictHostKeyChecking=yes \
-    "$SSH_USER@$DUT_HOST" \
+ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
     'ubus call system board'
 
 echo "=== DUT network interfaces ==="
 ssh "${SSH_OPTS[@]}" "$SSH_USER@$DUT_HOST" \
-  'ip -br link'
+    'ip -br link'
 
 echo "=== DUT smoke test passed ==="
