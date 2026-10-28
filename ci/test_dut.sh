@@ -5,12 +5,7 @@ set -Eeuo pipefail
 : "${SSH_USER:?Set SSH_USER to the DUT SSH username}"
 : "${SSH_KEY:?Set SSH_KEY to the private-key file path}"
 
-SSH_OPTS=(
-  -i "$SSH_KEY"
-  -o BatchMode=yes
-  -o ConnectTimeout=5
-  -o StrictHostKeyChecking=yes
-)
+SSH_OPTS="-i $SSH_KEY -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 echo "=== DUT reachability ==="
 ping -c 3 -W 2 "$DUT_HOST"
