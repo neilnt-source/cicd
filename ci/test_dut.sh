@@ -8,10 +8,6 @@ set -Eeuo pipefail
 
 SSH_OPTS=(
     -i "$SSH_KEY"
-    -o IdentitiesOnly=yes
-    -o BatchMode=yes
-    -o ConnectTimeout=5
-    -o StrictHostKeyChecking=yes
 )
 
 echo "=== SSH configuration ==="
